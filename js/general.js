@@ -35,9 +35,9 @@ function mission_list(current_year,current_launch,current_land) {
   
     var api_link;
 
+    var newurl = window.location.protocol + "//" + window.location.host + window.location.pathname;
     if(current_year != undefined || current_launch != undefined || current_land != undefined){
 
-        var newurl = window.location.protocol + "//" + window.location.host + window.location.pathname;
         var data_value = {};
 
         if(current_year == ''){
@@ -73,6 +73,7 @@ function mission_list(current_year,current_launch,current_land) {
         window.history.pushState({path:newurl},'',newurl);
     }
     else{
+        window.history.pushState({path:newurl},'',newurl);
         api_link = "https://api.spaceXdata.com/v3/launches?limit=100";
     }
 
@@ -87,53 +88,58 @@ function mission_list(current_year,current_launch,current_land) {
             $('body').removeClass('overlay');
             equalHeight();
         },
-        success: function(obj){    
+        success: function(obj){
 
             var list = document.getElementById("mission-list");
             var str = "";
+            if(!jQuery.isEmptyObject(obj)){
 
-            for (key in obj) {
+                for (key in obj) {
 
-                if(obj[key].mission_id.length == 0){
-                    obj[key].mission_id = '<em>NA</em>'
-                }
-                if(obj[key].rocket.first_stage.cores[0].land_success == null){
-                    obj[key].rocket.first_stage.cores[0].land_success = '<em>NA</em>'
-                }
+                    if(obj[key].mission_id.length == 0){
+                        obj[key].mission_id = '<em>NA</em>'
+                    }
+                    if(obj[key].rocket.first_stage.cores[0].land_success == null){
+                        obj[key].rocket.first_stage.cores[0].land_success = '<em>NA</em>'
+                    }
 
-                str += 
-                `<div class="result-items">
-                     <div class="result-item-inner">
-                         <div class="image-block">
-                             <img src="${obj[key].links.mission_patch}" alt="${obj[key].mission_name}">
+                    str += 
+                    `<div class="result-items">
+                         <div class="result-item-inner">
+                             <div class="image-block">
+                                 <img src="${obj[key].links.mission_patch}" alt="${obj[key].mission_name}">
+                             </div>
+                             <div class="content-block">
+                                 <h3>${obj[key].mission_name}</h3>
+                                 <ul class="mission-details-list">
+                                     <li>
+                                         <span class="title">Mission Ids:</span>
+                                         <span class="value">${obj[key].mission_id}</span>
+                                     </li>
+                                     <li>
+                                         <span class="title">Launch Year:</span>
+                                         <span class="value">${obj[key].launch_year}</span>
+                                     </li>
+                                     <li>
+                                         <span class="title">Successful Launch:</span>
+                                         <span class="value">${obj[key].launch_success}</span>
+                                     </li>
+                                     <li>
+                                         <span class="title">Successful Landing:</span>
+                                         <span class="value">${obj[key].rocket.first_stage.cores[0].land_success}</span>
+                                     </li>
+                                 </ul>
+                             </div>
                          </div>
-                         <div class="content-block">
-                             <h3>${obj[key].mission_name}</h3>
-                             <ul class="mission-details-list">
-                                 <li>
-                                     <span class="title">Mission Ids:</span>
-                                     <span class="value">${obj[key].mission_id}</span>
-                                 </li>
-                                 <li>
-                                     <span class="title">Launch Year:</span>
-                                     <span class="value">${obj[key].launch_year}</span>
-                                 </li>
-                                 <li>
-                                     <span class="title">Successful Launch:</span>
-                                     <span class="value">${obj[key].launch_success}</span>
-                                 </li>
-                                 <li>
-                                     <span class="title">Successful Landing:</span>
-                                     <span class="value">${obj[key].rocket.first_stage.cores[0].land_success}</span>
-                                 </li>
-                             </ul>
-                         </div>
-                     </div>
-                 </div>`;
-            }
+                     </div>`;
+                }
 
-            list.innerHTML = str;
-        }
+                list.innerHTML = str;
+
+            }else{
+                list.innerHTML = '<p>No Matches Found</p>';
+            }    
+        },
     });
 }
 
