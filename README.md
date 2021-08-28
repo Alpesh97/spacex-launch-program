@@ -12,3 +12,9 @@
 	   - https://github.com/Alpesh97/spacex-launch-program.git
 
 	2) Run the index.html file in any web browser
+
+<h2>Lighthouse score</h2>
+
+	-> Using Lighthouse in Chrome DevTools
+	![lighthouse](https://user-images.githubusercontent.com/59405951/131209092-8aafb9de-5ccb-4d0c-928c-e2ddc2c57473.png)
+
